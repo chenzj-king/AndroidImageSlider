@@ -40,7 +40,7 @@ publish {
     artifactId = 'AndroidImageSlider'
     publishVersion = '1.0.0'
     desc = 'Oh hi, this is a nice description for a project, right?'
-    website = 'https://github.com/chenzj-king/RvHelper'
+    website = 'https://github.com/chenzj-king/AndroidImageSlider'
     bintrayUser = bintrayUserVal
     bintrayKey = bintrayKeyVal
     dryRun = false

@@ -43,8 +43,8 @@
         </attr>
 
         <attr name="daimajia_slider_shape" format="enum">
-            <enum value="0" name="oval"/>
-            <enum value="1" name="rect"/>
+            <enum name="oval" value="0"/>
+            <enum name="rect" value="1"/>
         </attr>
 
         <attr name="selected_color" format="color"/>

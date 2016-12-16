@@ -29,7 +29,7 @@
         custom:selected_padding_left="5dp"
         custom:selected_padding_right="5dp"
         custom:selected_width="6dp"
-        custom:shape="oval"
+        custom:daimajia_slider_shape="oval"
         custom:unselected_color="#55333333"
         custom:unselected_height="6dp"
         custom:unselected_padding_left="5dp"
