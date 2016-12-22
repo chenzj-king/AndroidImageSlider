@@ -43,7 +43,7 @@ publish {
     userOrg = 'chenzj-king'
     groupId = 'com.dreamliner.lib'
     artifactId = 'AndroidImageSlider'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'Oh hi, this is a nice description for a project, right?'
     website = 'https://github.com/chenzj-king/AndroidImageSlider'
     bintrayUser = bintrayUserVal

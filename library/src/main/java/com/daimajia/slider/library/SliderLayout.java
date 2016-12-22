@@ -137,6 +137,8 @@ public class SliderLayout extends RelativeLayout {
      */
     private long mSliderDuration = 4000;
 
+    private long mRecoverCycleDuration = 1000;
+
     /**
      * Visibility of {@link com.daimajia.slider.library.Indicators.PagerIndicator}
      */
@@ -311,6 +313,16 @@ public class SliderLayout extends RelativeLayout {
     }
 
     /**
+     * set the duration when slider changes by user. the duration value must >= 200
+     *
+     * @param duration
+     */
+    public void setRecoverCycleDuration(long duration) {
+        if (duration >= 200)
+            mRecoverCycleDuration = duration;
+    }
+
+    /**
      * stop the auto circle
      */
     public void stopAutoCycle() {
@@ -350,7 +362,7 @@ public class SliderLayout extends RelativeLayout {
                     startAutoCycle();
                 }
             };
-            mResumingTimer.schedule(mResumingTask, 6000);
+            mResumingTimer.schedule(mResumingTask, mRecoverCycleDuration);
         }
     }
 
@@ -594,6 +606,7 @@ public class SliderLayout extends RelativeLayout {
         public int getResourceId() {
             return id;
         }
+
     }
 
     public void setPresetIndicator(PresetIndicators presetIndicator) {
