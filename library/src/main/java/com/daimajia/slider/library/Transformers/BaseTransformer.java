@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.daimajia.slider.library.Animations.BaseAnimationInterface;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.nineoldandroids.view.ViewHelper;
+import com.daimajia.slider.library.util.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

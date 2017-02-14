@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.daimajia.slider.library.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 
@@ -46,8 +48,6 @@ public abstract class BaseSliderView {
     private ImageLoadListener mLoadListener;
 
     private String mDescription;
-
-    private Picasso mPicasso;
 
     /**
      * Scale type of the image.
@@ -216,60 +216,77 @@ public abstract class BaseSliderView {
             mLoadListener.onStart(me);
         }
 
-        Picasso p = (mPicasso != null) ? mPicasso : Picasso.with(mContext);
-        RequestCreator rq = null;
+        RequestManager requestManager = Glide.with(mContext);
+        DrawableTypeRequest drawableTypeRequest = null;
         if (mUrl != null) {
-            rq = p.load(mUrl);
+            drawableTypeRequest = requestManager.load(mUrl);
         } else if (mFile != null) {
-            rq = p.load(mFile);
+            drawableTypeRequest = requestManager.load(mFile);
         } else if (mRes != 0) {
-            rq = p.load(mRes);
+            drawableTypeRequest = requestManager.load(mRes);
         } else {
             return;
         }
 
-        if (rq == null) {
+        if (drawableTypeRequest == null) {
             return;
         }
 
         if (getEmpty() != 0) {
-            rq.placeholder(getEmpty());
+            drawableTypeRequest.placeholder(getEmpty());
         }
 
         if (getError() != 0) {
-            rq.error(getError());
+            drawableTypeRequest.error(getError());
         }
 
         switch (mScaleType) {
             case Fit:
-                rq.fit();
+                //drawableTypeRequest.fit();
                 break;
             case CenterCrop:
-                rq.fit().centerCrop();
+                drawableTypeRequest.centerCrop();
                 break;
             case CenterInside:
-                rq.fit().centerInside();
+                drawableTypeRequest.fitCenter();
                 break;
         }
+        //drawableTypeRequest.listener(new CustomRequestListener(me, v));
+        drawableTypeRequest.into(targetImageView);
+    }
 
-        rq.into(targetImageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                if (v.findViewById(R.id.loading_bar) != null) {
-                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
-                }
-            }
+    private class CustomRequestListener implements RequestListener<String, GlideDrawable> {
 
-            @Override
-            public void onError() {
-                if (mLoadListener != null) {
-                    mLoadListener.onEnd(false, me);
-                }
-                if (v.findViewById(R.id.loading_bar) != null) {
-                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+        private BaseSliderView me;
+        private View v;
+
+        public CustomRequestListener(BaseSliderView me, View v) {
+            this.me = me;
+            this.v = v;
+        }
+
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//            if (mLoadListener != null) {
+//                mLoadListener.onEnd(false, me);
+//            }
+//            if (v.findViewById(R.id.loading_bar) != null) {
+//                v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
+//            }
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
+                isFromMemoryCache, boolean isFirstResource) {
+//            if (mLoadListener != null) {
+//                mLoadListener.onEnd(false, me);
+//            }
+//            if (v.findViewById(R.id.loading_bar) != null) {
+//                v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
+//            }
+            return false;
+        }
     }
 
 
@@ -316,25 +333,5 @@ public abstract class BaseSliderView {
         public void onStart(BaseSliderView target);
 
         public void onEnd(boolean result, BaseSliderView target);
-    }
-
-    /**
-     * Get the last instance set via setPicasso(), or null if no user provided instance was set
-     *
-     * @return The current user-provided Picasso instance, or null if none
-     */
-    public Picasso getPicasso() {
-        return mPicasso;
-    }
-
-    /**
-     * Provide a Picasso instance to use when loading pictures, this is useful if you have a
-     * particular HTTP cache you would like to share.
-     *
-     * @param picasso The Picasso instance to use, may be null to let the system use the default
-     *                instance
-     */
-    public void setPicasso(Picasso picasso) {
-        mPicasso = picasso;
     }
 }

@@ -3,7 +3,6 @@ package com.daimajia.slider.demo;
 import android.util.Log;
 import android.view.View;
 
-import com.daimajia.androidanimations.library.attention.StandUpAnimator;
 import com.daimajia.slider.library.Animations.BaseAnimationInterface;
 
 public class ChildAnimationExample implements BaseAnimationInterface {

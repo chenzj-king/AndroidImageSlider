@@ -2,7 +2,8 @@ package com.daimajia.slider.library.Transformers;
 
 import android.view.View;
 
-import com.nineoldandroids.view.ViewHelper;
+import com.daimajia.slider.library.util.ViewHelper;
+
 
 public class BackgroundToForegroundTransformer extends BaseTransformer {
 
