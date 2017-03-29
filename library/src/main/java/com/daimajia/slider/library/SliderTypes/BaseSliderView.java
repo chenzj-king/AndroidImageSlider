@@ -1,18 +1,22 @@
 package com.daimajia.slider.library.SliderTypes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.daimajia.slider.library.R;
 
 import java.io.File;
+
+import static com.daimajia.slider.library.SliderTypes.BaseSliderView.ScaleType.Fit;
 
 /**
  * When you want to make your own slider view, you must extends from this class.
@@ -52,7 +56,7 @@ public abstract class BaseSliderView {
     /**
      * Scale type of the image.
      */
-    private ScaleType mScaleType = ScaleType.Fit;
+    private ScaleType mScaleType = Fit;
 
     public enum ScaleType {
         CenterCrop, CenterInside, Fit, FitCenterCrop
@@ -197,7 +201,7 @@ public abstract class BaseSliderView {
      * @param v               the whole view
      * @param targetImageView where to place image
      */
-    protected void bindEventAndShow(final View v, ImageView targetImageView) {
+    protected void bindEventAndShow(final View v, final ImageView targetImageView) {
         final BaseSliderView me = this;
 
         v.setOnClickListener(new View.OnClickListener() {
@@ -217,78 +221,66 @@ public abstract class BaseSliderView {
         }
 
         RequestManager requestManager = Glide.with(mContext);
-        DrawableTypeRequest drawableTypeRequest = null;
+        BitmapTypeRequest bitmapTypeRequest;
         if (mUrl != null) {
-            drawableTypeRequest = requestManager.load(mUrl);
+            bitmapTypeRequest = requestManager.load(mUrl).asBitmap();
         } else if (mFile != null) {
-            drawableTypeRequest = requestManager.load(mFile);
+            bitmapTypeRequest = requestManager.load(mFile).asBitmap();
         } else if (mRes != 0) {
-            drawableTypeRequest = requestManager.load(mRes);
+            bitmapTypeRequest = requestManager.load(mRes).asBitmap();
         } else {
             return;
         }
 
-        if (drawableTypeRequest == null) {
+        if (bitmapTypeRequest == null) {
             return;
         }
 
         if (getEmpty() != 0) {
-            drawableTypeRequest.placeholder(getEmpty());
+            bitmapTypeRequest.placeholder(getEmpty());
         }
 
         if (getError() != 0) {
-            drawableTypeRequest.error(getError());
+            bitmapTypeRequest.error(getError());
         }
 
         switch (mScaleType) {
             case Fit:
-                //drawableTypeRequest.fit();
+                targetImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                break;
+            case FitCenterCrop:
+                targetImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 break;
             case CenterCrop:
-                drawableTypeRequest.centerCrop();
+                targetImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 break;
             case CenterInside:
-                drawableTypeRequest.fitCenter();
+                targetImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 break;
         }
-        //drawableTypeRequest.listener(new CustomRequestListener(me, v));
-        drawableTypeRequest.into(targetImageView);
+        bitmapTypeRequest.into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                targetImageView.setImageDrawable(errorDrawable);
+                loadEnd();
+            }
+
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                targetImageView.setImageBitmap(resource);
+                loadEnd();
+            }
+
+            private void loadEnd() {
+                if (mLoadListener != null) {
+                    mLoadListener.onEnd(false, me);
+                }
+                if (v.findViewById(R.id.loading_bar) != null) {
+                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
-
-    private class CustomRequestListener implements RequestListener<String, GlideDrawable> {
-
-        private BaseSliderView me;
-        private View v;
-
-        public CustomRequestListener(BaseSliderView me, View v) {
-            this.me = me;
-            this.v = v;
-        }
-
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//            if (mLoadListener != null) {
-//                mLoadListener.onEnd(false, me);
-//            }
-//            if (v.findViewById(R.id.loading_bar) != null) {
-//                v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
-//            }
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
-                isFromMemoryCache, boolean isFirstResource) {
-//            if (mLoadListener != null) {
-//                mLoadListener.onEnd(false, me);
-//            }
-//            if (v.findViewById(R.id.loading_bar) != null) {
-//                v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
-//            }
-            return false;
-        }
-    }
-
 
     public BaseSliderView setScaleType(ScaleType type) {
         mScaleType = type;
