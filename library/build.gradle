@@ -8,13 +8,13 @@ def bintrayKeyVal = properties.getProperty('bintrayKey')
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 15
-        versionName "1.1.5"
+        versionCode 16
+        versionName "1.2.0"
     }
     buildTypes {
         release {
@@ -28,8 +28,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile "com.android.support:support-v4:25.3.0"
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile "com.android.support:support-v4:25.3.1"
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
 }
@@ -43,7 +43,7 @@ publish {
     userOrg = 'chenzj-king'
     groupId = 'com.dreamliner.lib'
     artifactId = 'AndroidImageSlider'
-    publishVersion = '1.1.0'
+    publishVersion = '1.2.0'
     desc = 'Oh hi, this is a nice description for a project, right?'
     website = 'https://github.com/chenzj-king/AndroidImageSlider'
     bintrayUser = bintrayUserVal

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.daimajia.slider.library.R;
@@ -243,7 +244,7 @@ public abstract class BaseSliderView {
         if (getError() != 0) {
             bitmapTypeRequest.error(getError());
         }
-
+        bitmapTypeRequest.diskCacheStrategy(DiskCacheStrategy.SOURCE);
         switch (mScaleType) {
             case Fit:
                 targetImageView.setScaleType(ImageView.ScaleType.FIT_XY);
